@@ -17,7 +17,6 @@ class Player
     if @symbol.to_i.is_a? Integer
       (@@player_count == 1)? @symbol = 'X': @symbol = 'O'
     end
-    @symbol = symbol.capitalize
   end
 end
 
@@ -56,13 +55,62 @@ def get_player_move(player, board, board_size)
   move - 1
 end
 
+def check_if_winner(board, board_size)
+  # Horizontal check
+  h = 0
+  while h < board.length
+    winner = true
+    (board_size - 1).times do |i|
+      current_pos = h + i
+      next_pos = current_pos + 1
+      winner = false unless board[current_pos] == board[next_pos]
+    end
+    return true if winner
+    h += board_size
+  end
+
+  # Vertical check
+  v = 0
+  while v < board_size
+    winner = true
+    (board_size - 1).times do |i|
+      current_pos = i + v
+      next_pos = current_pos + board_size
+      winner = false unless board[current_pos] == board[next_pos]
+    end
+    return true if winner
+    v += 1
+  end
+
+  # Cross check
+  winner = true
+  current_pos = 0
+  (board_size - 1).times do
+    next_pos = current_pos + board_size + 1
+    winner = false unless board[current_pos] == board[next_pos]
+    current_pos = next_pos
+  end
+  return true if winner
+  
+  winner = true
+  current_pos = board_size - 1
+  (board_size - 1).times do
+  next_pos = current_pos + board_size - 1
+  winner = false unless board[current_pos] == board[next_pos]
+  current_pos = next_pos
+  end
+  return true if winner
+
+  return false
+end
+
 def play_a_round(board, board_size, player1, player2)
   print_board(board, player1, player2)
   while true
     move = get_player_move(player1, board, board_size)
     board[move] = player1.symbol
     print_board(board, player1, player2)
-
+    puts 'winner' if check_if_winner(board, board_size)
     move = get_player_move(player2, board, board_size)
     board[move] = player2.symbol
     print_board(board, player1, player2)
