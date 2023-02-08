@@ -73,10 +73,14 @@ def check_if_winner(board, board_size)
   v = 0
   while v < board_size
     winner = true
+    current_pos = v
     (board_size - 1).times do |i|
-      current_pos = i + v
       next_pos = current_pos + board_size
       winner = false unless board[current_pos] == board[next_pos]
+      puts board[current_pos]
+      puts board[next_pos]
+      puts winner
+      current_pos = next_pos
     end
     return true if winner
     v += 1
@@ -90,6 +94,7 @@ def check_if_winner(board, board_size)
     winner = false unless board[current_pos] == board[next_pos]
     current_pos = next_pos
   end
+  puts winner
   return true if winner
   
   winner = true
@@ -104,16 +109,31 @@ def check_if_winner(board, board_size)
   return false
 end
 
+def print_winner(message)
+  print "
+  |=============================|
+   #{message}
+  |=============================|
+  "
+end
+
 def play_a_round(board, board_size, player1, player2)
   print_board(board, player1, player2)
   while true
     move = get_player_move(player1, board, board_size)
     board[move] = player1.symbol
     print_board(board, player1, player2)
-    puts 'winner' if check_if_winner(board, board_size)
+    if check_if_winner(board, board_size)
+      print_winner("#{player1.name} has won!")
+      break
+    end
     move = get_player_move(player2, board, board_size)
     board[move] = player2.symbol
     print_board(board, player1, player2)
+    if check_if_winner(board, board_size)
+      print_winner("#{player1.name} has won!")
+      break
+    end
   end
 end
 
