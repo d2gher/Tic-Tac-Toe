@@ -91,7 +91,6 @@ def check_if_winner(board, board_size)
     winner = false unless board[current_pos] == board[next_pos]
     current_pos = next_pos
   end
-  puts winner
   return true if winner
   
   winner = true
@@ -114,6 +113,10 @@ def print_winner(message)
   "
 end
 
+def draw?(board)
+  board.all? {|e| e.is_a? String }
+end
+
 def play_a_round(board, board_size, player1, player2)
   print_board(board, player1, player2)
   while true
@@ -125,12 +128,20 @@ def play_a_round(board, board_size, player1, player2)
       player1.score += 1
       break
     end
+    if draw?(board)
+      print_winner("It's a draw!")
+      break
+    end
     move = get_player_move(player2, board, board_size)
     board[move] = player2.symbol
     print_board(board, player1, player2)
     if check_if_winner(board, board_size)
       print_winner("#{player2.name} has won!")
       player2.score += 1
+      break
+    end
+    if draw?(board)
+      print_winner("It's a draw!")
       break
     end
   end
